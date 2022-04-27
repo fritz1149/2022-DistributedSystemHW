@@ -1,9 +1,5 @@
 #include <winsock2.h>
 #include <cstdio>
-#include <sys/timeb.h>
-#include <ctime>
-#include<windows.h>
-#include<chrono>
 #define NTP_Port 123
 #define NTP_PACKET_SIZE 48
 #define WIN_TO_UNIX 116444736000000000LL //1601与1970的时间间隔
