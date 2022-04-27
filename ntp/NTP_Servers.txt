@@ -1,0 +1,5 @@
+time.windows.com
+time.nist.gov
+cn.ntp.org.cn
+ntp.ntsc.ac.cn
+cn.pool.ntp.org
