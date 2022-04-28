@@ -77,7 +77,7 @@ setServerAddr函数如下所示：
 
 发送后立即调用接收返回报文的函数receiveNTPResponse，该函数如下所示：
 
-<img src="C:\Users\X1 Extreme\AppData\Roaming\Typora\typora-user-images\image-20220428200514771.png" alt="image-20220428200514771" style="zoom:100%;float:left" />
+<img src="image-20220428200514771.png" alt="image-20220428200514771" style="zoom:100%;float:left" />
 
 接到返回报文后，立即调用系统API获取当前时间作为 `t4` ，至此就获得了 `t1` `t2` `t3` `t4`。
 
