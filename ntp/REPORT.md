@@ -62,8 +62,17 @@ DNS查询分为递归查询和迭代查询两种，迭代查询指本地DNS服�
 
 初始化过程中创建套接字用来与NTP服务器通信，接收来自NTP服务器的响应，此处套接字可以工作在阻塞或非阻塞模式。
 
-NTP_Client初始化完成后
+NTP_Client初始化完成后执行setServerAddr,函数接受一个字符串参数，表示NTP服务器的域名，并调用windows平台的api gethostbyname(char*)来通过DNS查询获取NTP服务器的ip地址，并设置套接字的目标ip地址和端口为123端口，并设置ip协议族版本号为ipv4。
+
+setServerAddr函数如下所示：
+
+![image-20220428195703261](./image-20220428195703261.png)
+
+得到NTP服务器ip地址并设置好套接字后开始发送NTP请求，sendNTPRequest函数如下所示：
+
+![image-20220428195801541](./image-20220428195801541.png)
+
+首先获取当前时间作为t1，然后调用库函数sendto，向NTP服务器发送
 
 ### 改进方案
 
-(针对ntp服务器被墙或延迟高)
