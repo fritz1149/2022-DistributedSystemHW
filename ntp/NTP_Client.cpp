@@ -117,7 +117,7 @@ struct NTP_Timestamp_Data {
         MicroSecond = (raw_time % 10000) / 10;
     }
     void output(){
-        printf("%ld %ld %ld %ld %ld\n", 
+        printf("\nHour: %ld, Minute: %ld, Second: %ld, MilliSecond: %ld, MicroSecond: %ld\n\n", 
             Hour, Minute, Second, MilliSecond, MicroSecond);
     }
 };
@@ -136,14 +136,14 @@ bool NTP_Client::receiveNTPResponse(){
     t1 -= WIN_TO_UNIX;
     t4 -= WIN_TO_UNIX;
     
-    printf("t1:%llx, t2:%llx, t3:%llx, t4:%llx\n", t1, t2, t3, t4);
+    // printf("t1:%llx, t2:%llx, t3:%llx, t4:%llx\n", t1, t2, t3, t4);
     
     time_t offset = (t2 + t3 - t1 - t4) >> 1;
     time_t now;
     get_now(&now);
     now += offset;
     now -= WIN_TO_UNIX;
-    printf("now: %llx, offset: %llx\n", now, offset);
+    // printf("now: %llx, offset: %llx\n", now, offset);
 
     NTP_Timestamp_Data now2 = NTP_Timestamp_Data(now);
     now2.output();
