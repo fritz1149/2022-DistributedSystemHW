@@ -22,7 +22,10 @@ bool choose_url(int *choice){
 }
 int main(){
     NTP_Client client;
-    client.init();
+    if(!client.init()){
+        printf("Failed to init client!\nPlease check your Internet status or check your computer.\n");
+        return 0;
+    }
     // printf("%d\n", client.getState());
 
     freopen("NTP_Servers.txt", "r", stdin);
@@ -40,9 +43,18 @@ int main(){
         if(end)
             break;
 
-        client.setNTPServerAddr(url[choice]);
-        client.sendNTPRequest();
-        client.receiveNTPResponse();
+        if(!client.setNTPServerAddr(url[choice])){
+            printf("Chosen URL cannot be resolved!\nPlease choose anothor URL or check your Internet status.\n\n");
+            continue;
+        }
+        if(!client.sendNTPRequest()){
+            printf("Failed to send NTP request!\nPlease choose anothor URL or check your Internet status.\n\n");
+            continue;
+        }
+        if(!client.receiveNTPResponse()){
+            printf("Failed to receive NTP response!\nPlease choose anothor URL or check your Internet status.\n\n");
+            continue;
+        }
     }
     return 0;
 }

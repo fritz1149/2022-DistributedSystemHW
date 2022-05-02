@@ -47,6 +47,7 @@ bool NTP_Client::setNTPServerAddr(char *url){
 	NTPServerAddr.sin_family = AF_INET;
 	NTPServerAddr.sin_port = htons(NTP_Port); 
 
+    printf("address of %s: %s\n", url, inet_ntoa(NTPServerAddr.sin_addr));
     state = NTPServerAddrSet;
     return true;
 }
