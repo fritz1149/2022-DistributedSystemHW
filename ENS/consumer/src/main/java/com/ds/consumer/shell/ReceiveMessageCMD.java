@@ -9,16 +9,17 @@ import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 import org.apache.rocketmq.common.utils.NameServerAddressUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 
 import java.util.List;
-
 @ShellComponent
 public class ReceiveMessageCMD {
     DefaultMQPushConsumer consumer;
-
+    private static final Logger LOGGER= LoggerFactory.getLogger(ReceiveMessageCMD.class);
     public ReceiveMessageCMD() throws MQClientException {
         consumer = new DefaultMQPushConsumer("consumer-group");
         String namesrvAddr = NameServerAddressUtils.getNameServerAddresses();
@@ -29,8 +30,9 @@ public class ReceiveMessageCMD {
         consumer.registerMessageListener(new MessageListenerConcurrently() {
             @Override
             public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
-                for(MessageExt msg : msgs)
-                    System.out.println(new String(msg.getBody()));
+                for(MessageExt msg : msgs){
+                    LOGGER.info(new String(msg.getBody()));
+                }
                 // 标记该消息已经被成功消费
                 return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
             }

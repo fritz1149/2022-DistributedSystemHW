@@ -11,6 +11,8 @@ import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @ShellComponent
 public class SendMessageCMD {
@@ -33,8 +35,9 @@ public class SendMessageCMD {
     @ShellMethod("send a broadcast message")
     public String broadcast(
             @ShellOption(defaultValue = "broad") String topic,
-            @ShellOption(defaultValue = "broadcasting-message-body")String content
+            @ShellOption(defaultValue = "")String content
     ) throws MQBrokerException, RemotingException, InterruptedException, MQClientException {
+        content+=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.sss").format(new Date().getTime());
         Message broad=new Message(topic,"broadcasting",content.getBytes(StandardCharsets.UTF_8));
         rocketMQTemplate.getProducer().send(broad);
         return "broad success";
