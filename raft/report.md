@@ -105,4 +105,58 @@ Joint Consensus：
 4. 当新节点加入或落后太多的旧节点需要同步时，Leader会向其发送快照以令其快速同步。
 
 ### 技术实现&功能解析
-### 改进方案
+
+#### Leader选举
+
+![image-20220530154303960](C:\Users\Pc\AppData\Roaming\Typora\typora-user-images\image-20220530154303960.png)
+
+每个server以follower的状态启动
+
+![image-20220530154443113](C:\Users\Pc\AppData\Roaming\Typora\typora-user-images\image-20220530154443113.png)
+
+当心跳计时器超时发送拉票请求
+
+![image-20220530155053421](C:\Users\Pc\AppData\Roaming\Typora\typora-user-images\image-20220530155053421.png)
+
+当candidate获得超过半数选票则上台
+
+![image-20220530155116173](C:\Users\Pc\AppData\Roaming\Typora\typora-user-images\image-20220530155116173.png)
+
+处理拉票请求：如果自己任期比请求里的任期小，说明自己过期，下台；如果自己在当前任期还没投过票，就接受拉票请求（谁先来就投给谁）
+
+![image-20220530155235475](C:\Users\Pc\AppData\Roaming\Typora\typora-user-images\image-20220530155235475.png)
+
+#### 日志复制
+
+leader每轮向所有follower发送AppendEntries请求
+
+![image-20220530160418258](C:\Users\Pc\AppData\Roaming\Typora\typora-user-images\image-20220530160418258.png)
+
+![image-20220530160604276](C:\Users\Pc\AppData\Roaming\Typora\typora-user-images\image-20220530160604276.png)
+
+其中prevIndex和prevTerm是追加日志区间前一项的元数据；通过BATCH_SIZE来调整每次请求最多可以追加多少条日志。
+
+#### 请求重定向
+
+![image-20220530161124959](C:\Users\Pc\AppData\Roaming\Typora\typora-user-images\image-20220530161124959.png)
+
+在请求到达follower时，应重定向到leader
+
+#### 应用：计数器
+
+在先前实现的选举服务的基础上，为每个server增加两个RPC，分别是increase和query
+
+increase：将状态机的计数器+1
+
+query：查询状态机的计数器的值
+
+![image-20220530163108742](C:\Users\Pc\AppData\Roaming\Typora\typora-user-images\image-20220530163108742.png)
+
+![image-20220530163127696](C:\Users\Pc\AppData\Roaming\Typora\typora-user-images\image-20220530163127696.png)
+
+#### 实验：不稳定的网络环境
+
+在发送消息的方法中加入随机数，使每条消息以5%的概率丢失。模拟三十秒的时间，总共进行了16轮选举，term增加了13。其中心跳超时时限为0.25秒，一次消息传输时间为0.01秒。
+
+![image-20220530161641090](C:\Users\Pc\AppData\Roaming\Typora\typora-user-images\image-20220530161641090.png)
+
